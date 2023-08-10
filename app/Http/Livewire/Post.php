@@ -4,10 +4,15 @@ namespace App\Http\Livewire;
 
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Post extends Component
 {
-    public $posts, $title, $content, $postId, $slug, $status, $updatePost = false, $addPost = false;
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
+    public $title, $content, $postId, $slug, $status, $updatePost = false, $addPost = false;
 
     protected $listeners = [
         'deletePostListener' => 'deletePost'
@@ -28,8 +33,10 @@ class Post extends Component
 
     public function render()
     {
-        $this->posts = \App\Models\Post::latest()->get();
-        return view('livewire.post');
+
+        return view('livewire.post', [
+            'posts' => \App\Models\Post::paginate(10),
+        ]);
     }
 
     public function addPost()
